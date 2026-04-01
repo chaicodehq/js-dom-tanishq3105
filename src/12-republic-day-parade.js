@@ -111,9 +111,141 @@
  *   // => true
  */
 export function createContingent(name, type, state, members) {
-  // Your code here
+  //   // Your code here
+  //    *   1. createContingent(name, type, state, members)
+  //  *      - Creates a div.contingent with:
+  //  *        - data-name attribute = name
+  //  *        - data-type attribute = type (e.g., "military", "cultural", "school")
+  //  *        - data-state attribute = state (e.g., "Maharashtra", "Punjab")
+  //  *        - h3 with textContent = name
+  //  *        - span.type with textContent = type
+  //  *        - span.state with textContent = state
+  //  *        - ul with each member as an li element
+  //  *      - Returns the div element
+  //  *      - Validation: name (string), type (string), state (string),
+  //  *        members (array of strings). Agar invalid, return null.
+  if (
+    typeof name !== "string" ||
+    typeof type !== "string" ||
+    typeof state !== "string" ||
+    !Array.isArray(members)
+  )
+    return null;
+
+  const div = document.createElement("div");
+  div.className = "contingent";
+  div.dataset.name = name;
+  div.dataset.type = type;
+  div.dataset.state = state;
+  const h3 = document.createElement("h3");
+  h3.textContent = name;
+  const span1 = document.createElement("span");
+  span1.className = "type";
+  span1.textContent = type;
+  const span2 = document.createElement("span");
+  span2.className = "state";
+  span2.textContent = state;
+  const ul = document.createElement("ul");
+  members.forEach((member) => {
+    const li = document.createElement("li");
+    li.textContent = member;
+    ul.appendChild(li);
+  });
+  div.append(h3, span1, span2, ul);
+  return div;
 }
 
 export function setupParadeDashboard(container) {
-  // Your code here
+  if (!container) return null;
+
+  const addContingent = (contingent) => {
+    const { name, type, state, members } = contingent;
+    const element = createContingent(name, type, state, members);
+    if (!element) return null;
+    container.appendChild(element);
+    return element;
+  };
+
+  const removeContingent = (name) => {
+    const children = container.querySelectorAll(".contingent");
+    let removed = false;
+    children.forEach((child) => {
+      if (child.dataset.name === name) {
+        child.remove();
+        removed = true;
+      }
+    });
+    return removed;
+  };
+
+  const moveContingent = (name, direction) => {
+    const children = container.querySelectorAll(".contingent");
+    let contingent = null;
+
+    for (let child of children) {
+      if (child.dataset.name === name) {
+        contingent = child;
+        break;
+      }
+    }
+
+    if (!contingent) return false;
+
+    if (direction === "up") {
+      const prev = contingent.previousElementSibling;
+      if (!prev) return false;
+      container.insertBefore(contingent, prev);
+      return true;
+    }
+
+    if (direction === "down") {
+      const next = contingent.nextElementSibling;
+      if (!next) return false;
+      container.insertBefore(next, contingent);
+      return true;
+    }
+
+    return false;
+  };
+
+  const getContingentsByType = (type) => {
+    const children = container.querySelectorAll(".contingent");
+    return Array.from(children).filter((child) => child.dataset.type === type);
+  };
+
+  const highlightState = (state) => {
+    const children = container.querySelectorAll(".contingent");
+    let count = 0;
+
+    children.forEach((child) => {
+      if (child.dataset.state === state) {
+        child.classList.add("highlight");
+        count++;
+      } else {
+        child.classList.remove("highlight");
+      }
+    });
+
+    return count;
+  };
+
+  const getParadeOrder = () => {
+    const children = container.querySelectorAll(".contingent");
+    return Array.from(children).map((child) => child.dataset.name);
+  };
+
+  const getTotalMembers = () => {
+    const liElements = container.querySelectorAll("li");
+    return liElements.length;
+  };
+
+  return {
+    addContingent,
+    removeContingent,
+    moveContingent,
+    getContingentsByType,
+    highlightState,
+    getParadeOrder,
+    getTotalMembers,
+  };
 }

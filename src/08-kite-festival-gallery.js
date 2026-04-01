@@ -80,20 +80,126 @@
  */
 export function renderKiteCard(kite) {
   // Your code here
+  //    *   1. renderKiteCard(kite)
+  //  *      - Takes { name, color, size, maker, image } object
+  //  *      - Creates div.kite-card containing:
+  //  *        - img with src=image, alt=name
+  //  *        - h3.kite-name with textContent=name
+  //  *        - p.kite-maker with textContent="by {maker}"
+  //  *        - p.kite-info with textContent="{size} - {color}"
+  //  *      - Returns the div element
+  //  *      - Agar kite null/undefined or missing required fields
+  //  *        (name, color, size, maker, image), return null
+  if (!kite) return null;
+  const { name, color, size, maker, image } = kite;
+  if (!name || !color || !size || !maker || !image) return null;
+  const div = document.createElement("div");
+  div.className = "kite-card";
+  const img = document.createElement("img");
+  img.src = image;
+  img.alt = name;
+  const h3 = document.createElement("h3");
+  h3.className = "kite-name";
+  h3.textContent = name;
+  const pMarker = document.createElement("p");
+  pMarker.className = "kite-maker";
+  pMarker.textContent = `by ${maker}`;
+  const pInfo = document.createElement("p");
+  pInfo.className = "kite-info";
+  pInfo.textContent = `${size} - ${color}`;
+
+  div.append(img, h3, pMarker, pInfo);
+  return div;
 }
 
 export function renderGallery(container, kites) {
-  // Your code here
+  //   // Your code here
+  //    *   2. renderGallery(container, kites)
+  //  *      - Clears container's innerHTML (removes all existing children)
+  //  *      - Renders each kite using renderKiteCard
+  //  *      - Appends each card to container
+  //  *      - Skips null results from renderKiteCard (invalid kites)
+  //  *      - Returns number of kites successfully rendered
+  //  *      - Agar container null/undefined, return -1
+  //  *      - Agar kites not array, return -1
+  if (!container || !Array.isArray(kites)) return -1;
+  container.innerHTML = "";
+  let count = 0;
+  kites.forEach((kite) => {
+    if (renderKiteCard(kite) !== null) {
+      container.append(renderKiteCard(kite));
+      count++;
+    }
+  });
+  return count;
 }
 
 export function filterKites(container, kites, filterFn) {
-  // Your code here
+  //   // Your code here
+  //    *   3. filterKites(container, kites, filterFn)
+  //  *      - Filters kites array using filterFn (callback that takes kite, returns bool)
+  //  *      - Renders ONLY the filtered kites in container (clears first)
+  //  *      - Returns count of visible (rendered) kites
+  //  *      - Agar container null, return -1
+  //  *      - Agar kites not array or filterFn not function, return -1
+  if (!container || !Array.isArray(kites) || typeof filterFn !== "function")
+    return -1;
+  container.innerHTML = "";
+  const filteredKite = kites.filter((kite) => filterFn(kite));
+  let count = 0;
+  filteredKite.forEach((kite) => {
+    if (renderKiteCard(kite) !== null) {
+      container.append(renderKiteCard(kite));
+      count++;
+    }
+  });
+  return count;
 }
 
 export function sortAndRender(container, kites, sortField, order) {
   // Your code here
+  //    *   4. sortAndRender(container, kites, sortField, order)
+  //  *      - Creates a COPY of kites array (don't modify original)
+  //  *      - Sorts copy by sortField (e.g., "name", "size", "color")
+  //  *      - order: "asc" for ascending, "desc" for descending
+  //  *      - Renders sorted kites in container
+  //  *      - Returns the sorted array copy
+  //  *      - Agar container null, return []
+  //  *      - Agar kites not array, return []
+  //  *      - Default order is "asc" if not provided
+  if (!container || !Array.isArray(kites)) return [];
+  const kitesCopy = [...kites];
+  kitesCopy.sort((a, b) => {
+    const valA = a[sortField];
+    const valB = b[sortField];
+
+    if (typeof valA === "string") {
+      return order === "desc"
+        ? valB.localeCompare(valA)
+        : valA.localeCompare(valB);
+    }
+
+    return order === "desc" ? valB - valA : valA - valB;
+  });
+  kitesCopy.map((kite) => {
+    if (renderKiteCard(kite) !== null) container.append(renderKiteCard(kite));
+  });
+  return kitesCopy;
 }
 
 export function renderEmptyState(container, message) {
   // Your code here
+  //    *   5. renderEmptyState(container, message)
+  //  *      - Checks if container has any child elements
+  //  *      - If container is EMPTY (no children): creates p.empty-state with
+  //  *        textContent=message and appends to container. Returns true.
+  //  *      - If container already HAS children: does nothing. Returns false.
+  //  *      - Agar container null/undefined, return false
+  if (!container) return false;
+  if (container.children.length > 0) return false;
+  const p = document.createElement("p");
+  p.className = "empty-state";
+  p.textContent = message;
+  container.appendChild(p);
+  return true;
 }

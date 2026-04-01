@@ -91,24 +91,122 @@
  */
 export function createPandalElement(pandal) {
   // Your code here
+  //    *   1. createPandalElement(pandal)
+  //  *      - Takes { name, zone, theme, budget, rating } object
+  //  *      - Creates div with class "pandal"
+  //  *      - Sets data attributes using dataset:
+  //  *        data-name, data-zone, data-theme, data-budget, data-rating
+  //  *      - Sets textContent to pandal name
+  //  *      - Returns the element
+  //  *      - Agar pandal null/undefined or missing required fields, return null
+  //  *      - All fields are required: name(string), zone(string), theme(string),
+  //  *        budget(number), rating(number)
+  if (!pandal) return null;
+  const { name, zone, theme, budget, rating } = pandal;
+  if (
+    !name ||
+    !zone ||
+    !theme ||
+    !budget ||
+    !rating ||
+    typeof budget !== "number" ||
+    typeof rating !== "number"
+  )
+    return null;
+  const div = document.createElement("div");
+  div.className = "pandal";
+  div.dataset.name = name;
+  div.dataset.zone = zone;
+  div.dataset.theme = theme;
+  div.dataset.rating = rating;
+  div.dataset.budget = budget;
+  div.textContent = name;
+  return div;
 }
 
 export function getPandalInfo(element) {
   // Your code here
+  //    *   2. getPandalInfo(element)
+  //  *      - Reads dataset from element
+  //  *      - Returns {
+  //  *          name: dataset.name,
+  //  *          zone: dataset.zone,
+  //  *          theme: dataset.theme,
+  //  *          budget: Number(dataset.budget),
+  //  *          rating: Number(dataset.rating)
+  //  *        }
+  //  *      - Agar element null/undefined, return null
+  if (!element) return null;
+  return {
+    name: element.dataset.name,
+    zone: element.dataset.zone,
+    theme: element.dataset.theme,
+    budget: Number(element.dataset.budget),
+    rating: Number(element.dataset.rating),
+  };
 }
 
 export function updatePandalRating(element, newRating) {
   // Your code here
+  //    *   3. updatePandalRating(element, newRating)
+  //  *      - Updates element's data-rating attribute
+  //  *      - Returns old rating as number
+  //  *      - Validation: newRating must be number between 0 and 5 (inclusive)
+  //  *      - Agar invalid rating, return null (don't update)
+  //  *      - Agar element null/undefined, return null
+  if (!element || !(newRating >= 0 && newRating <= 5)) return null;
+  const oldRating = element.dataset.rating;
+  element.dataset.rating = newRating;
+  return Number(oldRating);
 }
 
 export function filterPandalsByZone(container, zone) {
   // Your code here
+  //    *   4. filterPandalsByZone(container, zone)
+  //  *      - Finds all .pandal children of container
+  //  *      - Returns array of elements where data-zone matches zone string
+  //  *      - Agar container null/undefined, return []
+  //  *      - Agar zone not string, return []
+  if (!container || typeof zone !== "string") return [];
+  return Array.from(container.children)
+    .filter((child) => child.classList.contains("pandal"))
+    .filter((child) => child.dataset.zone === zone);
 }
 
 export function getPandalsByBudgetRange(container, min, max) {
-  // Your code here
+  //   // Your code here
+  //   *   5. getPandalsByBudgetRange(container, min, max)
+  //  *      - Returns array of .pandal elements where data-budget value
+  //  *        is between min and max (inclusive)
+  //  *      - Budget values are compared as numbers
+  //  *      - Agar container null/undefined, return []
+  //  *      - Agar min or max not numbers, return []
+  if (!container) return [];
+  if (typeof min !== "number" || typeof max !== "number") return [];
+  return Array.from(container.children)
+    .filter((child) => child.classList.contains("pandal"))
+    .filter(
+      (child) =>
+        Number(child.dataset.budget) >= min &&
+        Number(child.dataset.budget) <= max,
+    );
 }
 
 export function sortPandalsByRating(container) {
   // Your code here
+  //    *   6. sortPandalsByRating(container)
+  //  *      - Gets all .pandal children of container
+  //  *      - Sorts them by data-rating in DESCENDING order (highest first)
+  //  *      - Re-appends them to container in sorted order
+  //  *        (moving existing elements re-orders them in DOM)
+  //  *      - Returns array of the sorted elements
+  //  *      - Agar container null/undefined, return []
+  if (!container) return [];
+  const children = Array.from(container.children).filter((child) =>
+    child.classList.contains("pandal"),
+  );
+  children.sort((a, b) => b.dataset.rating - a.dataset.rating);
+  container.innerHTML = "";
+  children.forEach((child) => container.appendChild(child));
+  return children;
 }

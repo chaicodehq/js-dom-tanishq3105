@@ -90,24 +90,101 @@
  */
 export function insertDancer(stage, newDancer, referenceDancer) {
   // Your code here
+  //    *   1. insertDancer(stage, newDancer, referenceDancer)
+  //  *      - Uses insertBefore to place newDancer before referenceDancer
+  //  *      - If referenceDancer is null, appends newDancer at end of stage
+  //  *      - Returns true if insertion successful
+  //  *      - Agar stage null/undefined, return false
+  //  *      - Agar newDancer null/undefined, return false
+  if (!stage || !newDancer) return false;
+  if (referenceDancer === null) {
+    stage.appendChild(newDancer);
+    return true;
+  }
+  stage.insertBefore(newDancer, referenceDancer);
+  return true;
 }
 
 export function cloneDancer(dancer, deep) {
   // Your code here
+  //  *   2. cloneDancer(dancer, deep)
+  //  *      - Uses cloneNode(deep) to create a copy of dancer element
+  //  *      - If the dancer has an id, appends "-copy" to the clone's id
+  //  *        (e.g., "dancer1" becomes "dancer1-copy")
+  //  *      - Returns the cloned element
+  //  *      - Agar dancer null/undefined, return null
+  if (!dancer) return null;
+  const clone = dancer.cloneNode(deep);
+  if (dancer.id) {
+    clone.id = `${dancer.id}-copy`;
+  }
+  return clone;
 }
 
 export function replaceDancer(stage, oldDancer, newDancer) {
   // Your code here
+  //    *   3. replaceDancer(stage, oldDancer, newDancer)
+  //  *      - Uses replaceChild to replace oldDancer with newDancer in stage
+  //  *      - Returns the old (replaced) dancer element
+  //  *      - Agar stage, oldDancer, or newDancer null/undefined, return null
+  if (!stage || !oldDancer || !newDancer) return null;
+  const replaced = stage.replaceChild(newDancer, oldDancer);
+  return replaced;
 }
 
 export function removeDancer(stage, dancer) {
   // Your code here
+  //   *   4. removeDancer(stage, dancer)
+  //  *      - Uses removeChild to remove dancer from stage
+  //  *      - Returns the removed dancer element
+  //  *      - If dancer is not a child of stage, return null (catch the error)
+  //  *      - Agar stage or dancer null/undefined, return null
+  if (!stage || !dancer || dancer.parentNode !== stage) return null;
+  return stage.removeChild(dancer);
 }
 
 export function rearrangeStage(stage, order) {
   // Your code here
+  //   *   5. rearrangeStage(stage, order)
+  //  *      - Takes array of indices representing new order of children
+  //  *        e.g., [2, 0, 1] means: current child at index 2 goes first,
+  //  *        then index 0, then index 1
+  //  *      - Collects references to all current children
+  //  *      - Removes all children from stage
+  //  *      - Re-appends in the new order specified by indices
+  //  *      - Returns true if successful
+  //  *      - Returns false if:
+  //  *        - stage null/undefined
+  //  *        - order not array
+  //  *        - order length doesn't match children count
+  //  *        - order contains invalid indices
+  if (!stage || !Array.isArray(order)) return false;
+  const childrenArray = Array.from(stage.children);
+  stage.innerHTML = "";
+  const rearrange = new Array(order.length);
+  if (order.length !== childrenArray.length) return false;
+  for (let i = 0; i < childrenArray.length; i++) {
+    if (
+      typeof order[i] !== "number" ||
+      order[i] < 0 ||
+      order[i] >= order.length
+    )
+      return false;
+    rearrange[i] = childrenArray[order[i]];
+  }
+  rearrange.forEach((child) => stage.appendChild(child));
+  return true;
 }
 
 export function duplicateFormation(stage) {
   // Your code here
+  //    *   6. duplicateFormation(stage)
+  //  *      - Creates a deep clone of the entire stage using cloneNode(true)
+  //  *      - Appends "-clone" to the clone's id (e.g., "stage" => "stage-clone")
+  //  *      - Returns the cloned stage element (not appended anywhere)
+  //  *      - Agar stage null/undefined, return null
+  if (!stage) return null;
+  const clone = stage.cloneNode(true);
+  clone.id = `${stage.id}-clone`;
+  return clone;
 }

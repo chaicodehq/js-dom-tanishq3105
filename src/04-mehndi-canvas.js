@@ -73,20 +73,84 @@
  */
 export function applyBaseStyle(element, color, size) {
   // Your code here
+  //    - Sets element.style properties:
+  //  *        backgroundColor = color
+  //  *        width = size + "px"
+  //  *        height = size + "px"
+  //  *        borderRadius = "50%"
+  //  *      - Returns the element
+  //  *      - Agar element null/undefined, return null
+  if (!element) return null;
+
+  element.style.backgroundColor = color;
+  element.style.width = size + "px";
+  element.style.height = size + "px";
+  element.style.borderRadius = "50%";
+  return element;
 }
 
 export function setPatternStyle(element, styles) {
   // Your code here
+  //   *      - Takes an object of CSS style properties
+  //  *        e.g., { border: "2px solid brown", opacity: "0.8", transform: "rotate(45deg)" }
+  //  *      - Applies each property to element.style
+  //  *      - Returns count of properties applied
+  //  *      - Agar element null/undefined, return -1
+  //  *      - Agar styles not object or null, return 0
+  if (!element) return -1;
+  if (typeof styles !== "object" || styles === null) return 0;
+
+  element.style.border = styles.border;
+  element.style.opacity = styles.opacity;
+  element.style.transform = styles.transform;
+  element.style.rotate = styles.rotate;
+
+  return Object.keys(styles).length;
 }
 
 export function getComputedStyles(element, properties) {
   // Your code here
+  //   *      - Takes an array of style property names
+  //  *        e.g., ["backgroundColor", "width", "opacity"]
+  //  *      - Returns object with those properties and their current values
+  //  *        from element.style
+  //  *        e.g., { backgroundColor: "brown", width: "100px", opacity: "0.8" }
+  //  *      - Agar element null/undefined, return null
+  //  *      - Agar properties not array, return null
+  if (!element) return null;
+  if (!Array.isArray(properties)) return null;
+
+  const result = {};
+  for (let prop of properties) {
+    result[prop] = element.style[prop];
+  }
+  return result;
 }
 
 export function toggleVisibility(element) {
-  // Your code here
+  //   // Your code here
+  //    *      - If element.style.display is "none", set it to ""
+  //  *      - Else set element.style.display to "none"
+  //  *      - Returns the new display value ("none" or "")
+  //  *      - Agar element null/undefined, return null
+  if (!element) return null;
+  if (element.style.display === "none") element.style.display = "";
+  else element.style.display = "none";
+  return element.style.display;
 }
 
 export function animateElement(element, frames) {
   // Your code here
+  //   *      - Takes array of style objects (animation frames)
+  //  *        e.g., [{ opacity: "0" }, { opacity: "0.5" }, { opacity: "1" }]
+  //  *      - Simplified version: just applies the LAST frame's styles to element
+  //  *      - Returns total number of frames
+  //  *      - Agar element null/undefined, return -1
+  //  *      - Agar frames not array or empty, return -1
+  if (!element || !Array.isArray(frames) || frames.length === 0) return -1;
+  for (let frame of frames) {
+    const st = Object.entries(frame);
+    element.style[st[0][0]] = st[0][1];
+  }
+  return frames.length;
 }

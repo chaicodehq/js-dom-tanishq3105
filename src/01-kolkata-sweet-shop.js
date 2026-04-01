@@ -61,13 +61,70 @@
  *   // => item now has <span class="special-badge">Bestseller</span>
  */
 export function createSweetItem(name, price, category) {
-  // Your code here
+  //   // Your code here
+  //    *   1. createSweetItem(name, price, category)
+  //  *      - Creates a div element with class "sweet-item"
+  //  *      - Inside div: h3 (name), p with class "price" (text: "₹{price}"),
+  //  *        span with class "category" (text: category)
+  //  *      - Returns the div element
+  //  *      - Validation: name must be string, price must be number, category must be string
+  //  *      - Agar koi bhi param missing ya invalid type, return null
+  if (
+    typeof name !== "string" ||
+    typeof price !== "number" ||
+    typeof category !== "string"
+  ) {
+    return null;
+  }
+  const div = document.createElement("div");
+  div.className = "sweet-item";
+  const h3 = document.createElement("h3");
+  h3.textContent = name;
+  const p = document.createElement("p");
+  p.className = "price";
+  p.textContent = `₹${price}`;
+
+  const span = document.createElement("span");
+  span.className = "category";
+  span.textContent = category;
+
+  div.append(h3, p, span);
+  return div;
 }
 
 export function buildMenuBoard(sweets) {
-  // Your code here
+  //  *   2. buildMenuBoard(sweets)
+  //  *      - Takes array of {name, price, category} objects
+  //  *      - Creates a div with id "menu-board"
+  //  *      - Loop through sweets, call createSweetItem for each
+  //  *      - Append each sweet item to menu-board
+  //  *      - Returns the menu-board div
+  //  *      - Empty array returns div with no children (bas empty menu-board)
+  //  *      - Agar sweets not array, return null
+  if (!Array.isArray(sweets)) return null;
+  const div = document.createElement("div");
+  div.id = "menu-board";
+  if (sweets.length === 0) return div;
+  sweets.map((sweet) => {
+    const d = createSweetItem(sweet.name, sweet.price, sweet.category);
+    div.appendChild(d);
+  });
+  return div;
 }
 
 export function addSpecialBadge(sweetElement, badgeText) {
-  // Your code here
+  //   *   3. addSpecialBadge(sweetElement, badgeText)
+  //  *      - Takes a sweet-item element and badge text string
+  //  *      - Creates a span with class "special-badge" and textContent = badgeText
+  //  *      - Appends the span to sweetElement
+  //  *      - Returns the modified sweetElement
+  //  *      - Agar sweetElement null/undefined, return null
+  //  *      - Agar badgeText not string or empty, return null
+  if (!sweetElement) return null;
+  if (typeof badgeText !== "string" || badgeText.length === 0) return null;
+  const span = document.createElement("span");
+  span.className = "special-badge";
+  span.textContent = badgeText;
+  sweetElement.appendChild(span);
+  return sweetElement;
 }

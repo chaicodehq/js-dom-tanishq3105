@@ -88,28 +88,106 @@
  */
 export function findQueueContainer(element) {
   // Your code here
+  //    *   1. findQueueContainer(element)
+  //  *      - From any element, traverses UP the DOM tree using closest()
+  //  *      - Finds nearest ancestor (or self) with class "queue-container"
+  //  *      - Returns the .queue-container element or null if not found
+  //  *      - Agar element null/undefined, return null
+  if (!element) return null;
+  const find = element.closest(".queue-container");
+  return find;
 }
 
 export function getNextInQueue(element) {
   // Your code here
+  //   *   2. getNextInQueue(element)
+  //  *      - Returns the nextElementSibling of element
+  //  *      - Returns null if there is no next sibling
+  //  *      - Agar element null/undefined, return null
+  if (!element) return null;
+  return element.nextElementSibling;
 }
 
 export function getPreviousInQueue(element) {
   // Your code here
+  //    *   3. getPreviousInQueue(element)
+  //  *      - Returns the previousElementSibling of element
+  //  *      - Returns null if there is no previous sibling
+  //  *      - Agar element null/undefined, return null
+  if (!element) return null;
+  return element.previousElementSibling;
 }
 
 export function getQueuePosition(element) {
   // Your code here
+  //  *   4. getQueuePosition(element)
+  //  *      - Returns 1-based index of element among its parent's children
+  //  *      - Uses parentNode.children to get siblings list
+  //  *      - First child = position 1, second = 2, etc.
+  //  *      - Agar element has no parentNode, return -1
+  //  *      - Agar element null/undefined, return -1
+  if (!element || !element.parentNode) return -1;
+  const siblings = element.parentNode.children;
+  for (let i = 0; i < siblings.length; i++) {
+    if (siblings[i] === element) return i + 1;
+  }
+  return -1;
 }
 
 export function moveToFront(element) {
   // Your code here
+  //    *   5. moveToFront(element)
+  //  *      - Moves element to be the FIRST child of its parent
+  //  *      - Uses parentNode.insertBefore(element, parentNode.firstChild)
+  //  *      - Returns true if moved successfully
+  //  *      - Returns false if element is already first child
+  //  *      - Returns false if element has no parent
+  //  *      - Agar element null/undefined, return false
+  if (!element || !element.parentNode) return false;
+  const parent = element.parentNode;
+  if (parent.firstElementChild === element) return false;
+  parent.insertBefore(element, parent.firstChild);
+  return true;
 }
 
 export function removeFromQueue(element) {
   // Your code here
+  //    *   6. removeFromQueue(element)
+  //  *      - Removes element from its parent using parentNode.removeChild()
+  //  *      - Returns the removed element
+  //  *      - Agar element has no parentNode, return null
+  //  *      - Agar element null/undefined, return null
+  if (!element || !element.parentNode) return null;
+  return element.parentNode.removeChild(element);
 }
 
 export function getQueueStats(queueContainer) {
   // Your code here
+  //    *   7. getQueueStats(queueContainer)
+  //  *      - Counts children of queueContainer with specific classes
+  //  *      - Returns {
+  //  *          total: total number of children,
+  //  *          waiting: count of children with class "waiting",
+  //  *          serving: count of children with class "serving",
+  //  *          completed: count of children with class "completed"
+  //  *        }
+  //  *      - Agar queueContainer null/undefined, return null
+  if (!queueContainer) return null;
+  const children = Array.from(queueContainer.children);
+  const total = children.length;
+  const waiting = children.filter((child) =>
+    child.classList.contains("waiting"),
+  ).length;
+  const serving = children.filter((child) =>
+    child.classList.contains("serving"),
+  ).length;
+  const completed = children.filter((child) =>
+    child.classList.contains("completed"),
+  ).length;
+  return {
+    total,
+    waiting,
+    serving,
+    completed,
+  };
 }
